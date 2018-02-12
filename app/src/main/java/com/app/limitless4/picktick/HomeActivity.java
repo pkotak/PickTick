@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -25,16 +26,31 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.app.limitless4.picktick.Fragments.TabFragment;
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    private boolean exit = false;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
+    @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    FragmentManager mFragmentManager;
+
+    @BindView(R.id.nav_view)
     NavigationView mNavigationView;
+
+
+    private boolean exit = false;
+    FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
+    private ExpandableRelativeLayout mExpandLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,32 +59,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
+        ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.fragment_container,new TabFragment()).commit();
 
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 //        View header = navigationView.getHeaderView(0);
 //        txtEmail = (TextView)header.findViewById(R.id.emailView);
 //        txtName = (TextView)header.findViewById(R.id.nameView);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
-
+        //Introduction For First Time Launch
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -100,6 +108,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // Start the thread
         t.start();
+    }
+
+
+    @OnClick(R.id.fab)
+    public void SnackbarNotification(View view) {
+        Snackbar.make(view, "Great, it works with Material Design", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @Override
